@@ -1,0 +1,43 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: hrboard_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hrboard
+      MYSQL_USER: hrboard
+      MYSQL_PASSWORD: hrboard
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - hrboard_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: hrboard_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: hrboard
+      PMA_PASSWORD: hrboard
+    ports:
+      - "8080:80"
+    networks:
+      - hrboard_network
+
+volumes:
+  db_data:
+
+networks:
+  hrboard_network:
+    driver: bridge
