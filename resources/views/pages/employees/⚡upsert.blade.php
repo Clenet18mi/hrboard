@@ -75,6 +75,7 @@ new #[Title('Employee')] class extends Component {
             'phone' => 'nullable|string|max:20',
             'birthDate' => 'nullable|date',
             'gender' => 'required|in:male,female',
+            'photo' => 'nullable|image|max:1024', // 1MB Max
         ];
 
         if (!$this->employee) {
@@ -83,13 +84,19 @@ new #[Title('Employee')] class extends Component {
 
         $validated = $this->validate($rules);
 
+        $data = collect($validated)->except(['name', 'email', 'password', 'photo'])->toArray();
+
+        if ($this->photo) {
+            $data['photo'] = $this->photo->store('photos', 'public');
+        }
+
         if ($this->employee) {
             $this->employee->user->update([
                 'name' => $this->name,
                 'email' => $this->email,
             ]);
 
-            $this->employee->update(collect($validated)->except(['name', 'email', 'password'])->toArray());
+            $this->employee->update($data);
             
             Flux::toast(variant: 'success', text: __('Employee updated.'));
         } else {
@@ -101,7 +108,7 @@ new #[Title('Employee')] class extends Component {
             $user->assignRole(RoleType::EMPLOYEE->value);
 
             Employee::create(array_merge(
-                collect($validated)->except(['name', 'email', 'password'])->toArray(),
+                $data,
                 ['user_id' => $user->id]
             ));
 
@@ -170,6 +177,23 @@ new #[Title('Employee')] class extends Component {
                         <flux:select.option value="male">{{ __('Male') }}</flux:select.option>
                         <flux:select.option value="female">{{ __('Female') }}</flux:select.option>
                     </flux:select>
+
+                    <flux:field>
+                        <flux:label>{{ __('Photo') }}</flux:label>
+                        <div class="flex items-center gap-4">
+                            @if ($photo)
+                                <img src="{{ $photo->temporaryUrl() }}" class="size-16 rounded-lg object-cover">
+                            @elseif ($employee?->photo)
+                                <img src="{{ asset('storage/' . $employee->photo) }}" class="size-16 rounded-lg object-cover">
+                            @else
+                                <div class="size-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                                    <flux:icon icon="user" class="text-zinc-400" />
+                                </div>
+                            @endif
+                            <flux:input type="file" wire:model="photo" />
+                        </div>
+                        <flux:error name="photo" />
+                    </flux:field>
                 </div>
             </div>
         </flux:card>

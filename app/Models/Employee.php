@@ -62,4 +62,17 @@ class Employee extends Model
     {
         return "{$this->firstName} {$this->lastName}";
     }
+
+    public function getLeaveBalanceAttribute(): float
+    {
+        $monthsWorked = $this->hireDate->diffInMonths(now());
+        $totalEarned = $monthsWorked * 2.5;
+        
+        $totalUsed = $this->leaves()
+            ->where('type', \App\Enums\LeaveType::PAID)
+            ->where('status', \App\Enums\LeaveStateType::APPROVED)
+            ->sum('days_count');
+            
+        return max(0, $totalEarned - $totalUsed);
+    }
 }

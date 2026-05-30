@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('departments', 'pages::departments.index')->name('departments.index');
     Route::livewire('employees', 'pages::employees.index')->name('employees.index');
     Route::livewire('employees/create', 'pages::employees.upsert')->name('employees.create');
+    Route::livewire('employees/{employee}', 'pages::employees.show')->name('employees.show');
     Route::livewire('employees/{employee}/edit', 'pages::employees.upsert')->name('employees.edit');
     Route::livewire('leaves', 'pages::leaves.index')->name('leaves.index');
 });

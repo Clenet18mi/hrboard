@@ -97,8 +97,8 @@ new #[Title('Employees')] class extends Component {
                 <flux:row :key="$employee->id">
                     <flux:cell>
                         <div class="flex items-center gap-2">
-                            <flux:avatar :name="$employee->full_name" size="sm" />
-                            <span>{{ $employee->full_name }}</span>
+                            <flux:avatar :name="$employee->full_name" :src="$employee->photo ? asset('storage/' . $employee->photo) : null" size="sm" />
+                            <flux:link :href="route('employees.show', $employee->id)" wire:navigate class="font-medium">{{ $employee->full_name }}</flux:link>
                         </div>
                     </flux:cell>
                     <flux:cell>{{ $employee->user->email }}</flux:cell>
