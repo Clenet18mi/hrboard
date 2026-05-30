@@ -3,8 +3,8 @@
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-amber-50 via-white to-zinc-100 text-zinc-900 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-white/80 backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/80">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
@@ -15,6 +15,11 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    @if (auth()->user()->employee)
+                        <flux:sidebar.item icon="user" :href="route('profile.show')" :current="request()->routeIs('profile.show')" wire:navigate>
+                            {{ __('My Profile') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
 
                 @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
@@ -32,6 +37,11 @@
                     <flux:sidebar.item icon="calendar" :href="route('leaves.index')" :current="request()->routeIs('leaves.*')" wire:navigate>
                         {{ __('Leave Requests') }}
                     </flux:sidebar.item>
+                    @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                        <flux:sidebar.item icon="calendar-days" :href="route('leaves.calendar')" :current="request()->routeIs('leaves.calendar')" wire:navigate>
+                            {{ __('Leave Calendar') }}
+                        </flux:sidebar.item>
+                    @endif
                 </flux:sidebar.group>
 
                 <flux:sidebar.group :heading="__('Account')" class="grid">
@@ -47,13 +57,11 @@
             <flux:spacer />
 
             <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
+                @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                    <flux:sidebar.item icon="printer" href="{{ route('reports.monthly-leaves.pdf') }}">
+                        {{ __('Monthly Leave Report') }}
+                    </flux:sidebar.item>
+                @endif
             </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />

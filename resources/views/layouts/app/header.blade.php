@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:header container class="border-b border-zinc-200 bg-gradient-to-r from-zinc-50 via-white to-amber-50/60 dark:border-zinc-700 dark:from-zinc-900 dark:via-zinc-900 dark:to-amber-500/10">
             <flux:sidebar.toggle class="lg:hidden mr-2" icon="bars-2" inset="left" />
 
             <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
@@ -13,32 +13,40 @@
                 <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
+                @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                    <flux:navbar.item icon="users" :href="route('employees.index')" :current="request()->routeIs('employees.*')" wire:navigate>
+                        {{ __('Employees') }}
+                    </flux:navbar.item>
+                    <flux:navbar.item icon="building-office" :href="route('departments.index')" :current="request()->routeIs('departments.*')" wire:navigate>
+                        {{ __('Departments') }}
+                    </flux:navbar.item>
+                @endif
+                <flux:navbar.item icon="calendar" :href="route('leaves.index')" :current="request()->routeIs('leaves.*')" wire:navigate>
+                    {{ __('Leaves') }}
+                </flux:navbar.item>
+                @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                    <flux:navbar.item icon="calendar-days" :href="route('leaves.calendar')" :current="request()->routeIs('leaves.calendar')" wire:navigate>
+                        {{ __('Calendar') }}
+                    </flux:navbar.item>
+                @endif
+                <flux:navbar.item icon="bell" :href="route('notifications.index')" :current="request()->routeIs('notifications.*')" wire:navigate>
+                    {{ __('Notifications') }}
+                </flux:navbar.item>
             </flux:navbar>
 
             <flux:spacer />
 
             <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-                <flux:tooltip :content="__('Search')" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
-                </flux:tooltip>
-                <flux:tooltip :content="__('Repository')" position="bottom">
-                    <flux:navbar.item
-                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
-                        icon="folder-git-2"
-                        href="https://github.com/laravel/livewire-starter-kit"
-                        target="_blank"
-                        :label="__('Repository')"
-                    />
-                </flux:tooltip>
-                <flux:tooltip :content="__('Documentation')" position="bottom">
-                    <flux:navbar.item
-                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
-                        icon="book-open-text"
-                        href="https://laravel.com/docs/starter-kits#livewire"
-                        target="_blank"
-                        :label="__('Documentation')"
-                    />
-                </flux:tooltip>
+                @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                    <flux:navbar.item class="!h-10" icon="sparkles" :href="route('employees.create')" wire:navigate>
+                        {{ __('New Employee') }}
+                    </flux:navbar.item>
+                @endif
+                @if (auth()->user()->employee)
+                    <flux:navbar.item class="!h-10" icon="plus" :href="route('leaves.index')" wire:navigate>
+                        {{ __('Request Leave') }}
+                    </flux:navbar.item>
+                @endif
             </flux:navbar>
 
             <x-desktop-user-menu />
