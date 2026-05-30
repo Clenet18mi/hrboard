@@ -18,7 +18,7 @@ class DepartmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->randomElement(['Ressources Humaines', 'Informatique', 'Marketing', 'Ventes', 'Finance', 'Logistique', 'Direction']),
+            'name' => $this->faker->randomElement(['Ressources Humaines', 'Informatique', 'Marketing', 'Ventes', 'Finance', 'Logistique', 'Direction', 'Production', 'Service Client', 'R&D']),
         ];
     }
 }
