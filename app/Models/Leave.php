@@ -32,6 +32,36 @@ class Leave extends Model
         'days_count' => 'integer',
     ];
 
+    public static function calculateDays($startDate, $endDate): int
+    {
+        $start = \Carbon\Carbon::parse($startDate);
+        $end = \Carbon\Carbon::parse($endDate);
+        $days = 0;
+
+        while ($start <= $end) {
+            if (!$start->isWeekend()) {
+                $days++;
+            }
+            $start->addDay();
+        }
+
+        return $days;
+    }
+
+    public function scopeOverlapping($query, $employeeId, $startDate, $endDate)
+    {
+        return $query->where('employee_id', $employeeId)
+            ->where('status', LeaveStateType::APPROVED)
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($sq) use ($startDate, $endDate) {
+                        $sq->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
+                    });
+            });
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
