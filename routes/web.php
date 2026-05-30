@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('leaves', 'pages::leaves.index')->name('leaves.index');
     Route::livewire('notifications', 'pages::notifications.index')->name('notifications.index');
     Route::get('leaves/{leave}/pdf', [PdfController::class, 'leaveBulletin'])->name('leaves.pdf');
+    Route::livewire('profile', 'pages::profile.show')->name('profile.show');
 
     // Management Routes (RH & Super Admin only)
     Route::middleware(['role:hr|super_admin'])->group(function () {

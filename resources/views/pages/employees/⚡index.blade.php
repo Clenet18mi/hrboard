@@ -15,6 +15,7 @@ new #[Title('Employees')] class extends Component {
     public string $search = '';
     public ?int $department_id = null;
     public ?string $status = null;
+    public ?string $contract_type = null;
 
     public function delete(Employee $employee)
     {
@@ -37,6 +38,7 @@ new #[Title('Employees')] class extends Component {
             })
             ->when($this->department_id, fn($q) => $q->where('department_id', $this->department_id))
             ->when($this->status, fn($q) => $q->where('status', $this->status))
+                ->when($this->contract_type, fn($q) => $q->where('contractType', $this->contract_type))
             ->paginate(10);
     }
 
@@ -49,6 +51,11 @@ new #[Title('Employees')] class extends Component {
     {
         return AccountStateType::cases();
     }
+
+    public function contractTypes()
+    {
+        return ContractType::cases();
+    }
 }; ?>
 
 <x-layouts::app>
@@ -60,7 +67,7 @@ new #[Title('Employees')] class extends Component {
         </flux:button>
     </div>
 
-    <div class="flex gap-4 pb-4">
+    <div class="flex flex-wrap gap-4 pb-4">
         <div class="flex-1">
             <flux:input wire:model.live="search" placeholder="{{ __('Search by name or email...') }}" icon="magnifying-glass" />
         </div>
@@ -72,11 +79,19 @@ new #[Title('Employees')] class extends Component {
                 @endforeach
             </flux:select>
         </div>
-        <div class="w-48">
+        <div class="w-56">
             <flux:select wire:model.live="status" placeholder="{{ __('All Statuses') }}">
                 <flux:select.option :value="null">{{ __('All Statuses') }}</flux:select.option>
                 @foreach ($this->statuses() as $status)
                     <flux:select.option :value="$status->value">{{ $status->name }}</flux:select.option>
+                @endforeach
+            </flux:select>
+        </div>
+        <div class="w-56">
+            <flux:select wire:model.live="contract_type" placeholder="{{ __('All Contracts') }}">
+                <flux:select.option :value="null">{{ __('All Contracts') }}</flux:select.option>
+                @foreach ($this->contractTypes() as $contractType)
+                    <flux:select.option :value="$contractType->value">{{ $contractType->name }}</flux:select.option>
                 @endforeach
             </flux:select>
         </div>
