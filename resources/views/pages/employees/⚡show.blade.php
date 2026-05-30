@@ -77,7 +77,7 @@ new #[Title('Employee Profile')] class extends Component {
                     </div>
                     <div>
                         <flux:text color="zinc" class="block">{{ __('Contract Type') }}</flux:text>
-                        <flux:text>{{ strtoupper($employee->contractType->value) }}</flux:text>
+                        <flux:text>{{ $employee->contract_label }}</flux:text>
                     </div>
                     <div>
                         <flux:text color="zinc" class="block">{{ __('Gross Monthly Salary') }}</flux:text>
@@ -85,7 +85,7 @@ new #[Title('Employee Profile')] class extends Component {
                     </div>
                     <div>
                         <flux:text color="zinc" class="block">{{ __('Status') }}</flux:text>
-                        <flux:badge size="sm" :inset="false">{{ $employee->status->name }}</flux:badge>
+                        <flux:badge size="sm" :inset="false">{{ $employee->status_label }}</flux:badge>
                     </div>
                 </div>
             </flux:card>
@@ -102,7 +102,7 @@ new #[Title('Employee Profile')] class extends Component {
                     <flux:rows>
                         @forelse ($employee->leaves()->latest()->take(5)->get() as $leave)
                             <flux:row :key="$leave->id">
-                                <flux:cell>{{ $leave->type->name }}</flux:cell>
+                                <flux:cell>{{ $leave->type_label }}</flux:cell>
                                 <flux:cell>{{ $leave->start_date->format('d/m/Y') }} - {{ $leave->end_date->format('d/m/Y') }}</flux:cell>
                                 <flux:cell>{{ $leave->days_count }}</flux:cell>
                                 <flux:cell>
@@ -113,7 +113,7 @@ new #[Title('Employee Profile')] class extends Component {
                                             default => 'warning',
                                         };
                                     @endphp
-                                    <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status->name }}</flux:badge>
+                                    <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status_label }}</flux:badge>
                                 </flux:cell>
                             </flux:row>
                         @empty

@@ -173,7 +173,7 @@ new #[Title('Leaves')] class extends Component {
                         @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
                             <flux:cell>{{ $leave->employee->full_name }}</flux:cell>
                         @endif
-                        <flux:cell>{{ $leave->type->name }}</flux:cell>
+                        <flux:cell>{{ $leave->type_label }}</flux:cell>
                         <flux:cell>
                             {{ $leave->start_date->format('d/m/Y') }} - {{ $leave->end_date->format('d/m/Y') }}
                         </flux:cell>
@@ -186,7 +186,7 @@ new #[Title('Leaves')] class extends Component {
                                     default => 'warning',
                                 };
                             @endphp
-                            <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status->name }}</flux:badge>
+                            <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status_label }}</flux:badge>
                         </flux:cell>
                         <flux:cell align="end">
                             @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]) && $leave->status === App\Enums\LeaveStateType::PENDING)

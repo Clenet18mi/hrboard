@@ -32,6 +32,28 @@ class Leave extends Model
         'days_count' => 'integer',
     ];
 
+    public function getTypeLabelAttribute(): string
+    {
+        return match($this->type) {
+            LeaveType::PAID => __('Paid Leave'),
+            LeaveType::RTT => 'RTT',
+            LeaveType::SICK => __('Sick Leave'),
+            LeaveType::UNPAID => __('Unpaid Leave'),
+            LeaveType::EXCEPTIONAL => __('Exceptional Leave'),
+            default => $this->type->value,
+        };
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            LeaveStateType::PENDING => __('Pending'),
+            LeaveStateType::APPROVED => __('Approved'),
+            LeaveStateType::REJECTED => __('Rejected'),
+            default => $this->status->value,
+        };
+    }
+
     public static function calculateDays($startDate, $endDate): int
     {
         $start = \Carbon\Carbon::parse($startDate);

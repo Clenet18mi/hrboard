@@ -38,6 +38,30 @@ class Employee extends Model
         'grossSalary' => 'float',
     ];
 
+    public function getStatusLabelAttribute(): string
+    {
+        return match($this->status) {
+            AccountStateType::ACTIVE => __('Active'),
+            AccountStateType::INACTIVE => __('Inactive'),
+            AccountStateType::BLOCKED => __('Blocked'),
+            AccountStateType::DELETED => __('Archived'),
+            AccountStateType::NOTICE => __('Notice Period'),
+            default => $this->status->value,
+        };
+    }
+
+    public function getContractLabelAttribute(): string
+    {
+        return match($this->contractType) {
+            ContractType::CDI => 'CDI',
+            ContractType::CDD => 'CDD',
+            ContractType::Stage => __('Internship'),
+            ContractType::Alternance => __('Apprenticeship'),
+            ContractType::Freelance => 'Freelance',
+            default => $this->contractType->value,
+        };
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
