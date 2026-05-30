@@ -45,7 +45,12 @@ new #[Title('Dashboard')] class extends Component {
     @php $data = $this->stats(); @endphp
 
     <div class="flex h-full w-full flex-1 flex-col gap-6">
-        <flux:heading size="xl">{{ __('Welcome back,') }} {{ Auth::user()->name }}</flux:heading>
+        <div class="flex items-center justify-between">
+            <flux:heading size="xl">{{ __('Welcome back,') }} {{ Auth::user()->name }}</flux:heading>
+            @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                <flux:button variant="ghost" icon="printer" href="{{ route('reports.monthly-leaves.pdf') }}">{{ __('Monthly Leave Report') }}</flux:button>
+            @endif
+        </div>
 
         @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
             {{-- RH / Admin Dashboard --}}

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -14,6 +15,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('employees/{employee}/edit', 'pages::employees.upsert')->name('employees.edit');
     Route::livewire('leaves', 'pages::leaves.index')->name('leaves.index');
     Route::livewire('notifications', 'pages::notifications.index')->name('notifications.index');
+
+    // PDF Routes
+    Route::get('employees/{employee}/pdf', [PdfController::class, 'employeeSheet'])->name('employees.pdf');
+    Route::get('employees/{employee}/attestation', [PdfController::class, 'attestation'])->name('employees.attestation');
+    Route::get('leaves/{leave}/pdf', [PdfController::class, 'leaveBulletin'])->name('leaves.pdf');
+    Route::get('reports/department/{department}/pdf', [PdfController::class, 'departmentList'])->name('reports.department.pdf');
+    Route::get('reports/monthly-leaves/pdf', [PdfController::class, 'monthlyLeavesReport'])->name('reports.monthly-leaves.pdf');
 });
 
 require __DIR__.'/settings.php';

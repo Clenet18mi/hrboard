@@ -24,6 +24,13 @@ new #[Title('Employee Profile')] class extends Component {
         </div>
         
         <div class="flex gap-2">
+            <flux:dropdown>
+                <flux:button variant="ghost" icon="printer" icon-trailing="chevron-down">{{ __('Generate PDF') }}</flux:button>
+                <flux:menu>
+                    <flux:menu.item href="{{ route('employees.pdf', $employee->id) }}">{{ __('Employee Sheet') }}</flux:menu.item>
+                    <flux:menu.item href="{{ route('employees.attestation', $employee->id) }}">{{ __('Work Certificate') }}</flux:menu.item>
+                </flux:menu>
+            </flux:dropdown>
             <flux:button variant="ghost" icon="pencil" :href="route('employees.edit', $employee->id)" wire:navigate>{{ __('Edit') }}</flux:button>
             <flux:button variant="ghost" icon="arrow-left" :href="route('employees.index')" wire:navigate>{{ __('Back to list') }}</flux:button>
         </div>

@@ -232,6 +232,9 @@ new #[Title('Leaves')] class extends Component {
 
                             <div class="flex">
                                 <flux:spacer />
+                                @if ($leave->status === App\Enums\LeaveStateType::APPROVED)
+                                    <flux:button variant="ghost" icon="printer" href="{{ route('leaves.pdf', $leave->id) }}" class="mr-2">{{ __('Download Bulletin') }}</flux:button>
+                                @endif
                                 <flux:modal.close>
                                     <flux:button variant="ghost">{{ __('Close') }}</flux:button>
                                 </flux:modal.close>

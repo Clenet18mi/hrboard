@@ -90,6 +90,7 @@ new #[Title('Departments')] class extends Component {
                     <flux:cell>{{ $department->manager?->full_name ?? __('N/A') }}</flux:cell>
                     <flux:cell>{{ $department->employees()->count() }}</flux:cell>
                     <flux:cell align="end">
+                        <flux:button variant="ghost" icon="printer" href="{{ route('reports.department.pdf', $department->id) }}" />
                         <flux:button variant="ghost" icon="pencil" wire:click="edit({{ $department->id }})" />
                         <flux:button variant="ghost" icon="trash" wire:click="delete({{ $department->id }})" />
                     </flux:cell>
