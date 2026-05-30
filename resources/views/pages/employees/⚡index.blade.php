@@ -119,7 +119,7 @@ new #[Title('Employees')] class extends Component {
                     <flux:cell>{{ $employee->user->email }}</flux:cell>
                     <flux:cell>{{ $employee->department?->name ?? __('N/A') }}</flux:cell>
                     <flux:cell>
-                        <flux:badge size="sm" :inset="false">{{ $employee->status_label }}</flux:badge>
+                        <flux:badge size="sm">{{ $employee->status_label }}</flux:badge>
                     </flux:cell>
                     <flux:cell>{{ $employee->hireDate->format('d/m/Y') }}</flux:cell>
                     <flux:cell align="end">

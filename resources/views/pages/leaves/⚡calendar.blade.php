@@ -100,7 +100,7 @@ new #[Title('Leave Calendar')] class extends Component {
     <flux:card class="p-4">
         <div class="flex items-center justify-between pb-3">
             <flux:text class="text-sm uppercase tracking-widest text-zinc-500">{{ $monthLabel }}</flux:text>
-            <flux:badge size="sm" variant="neutral" inset="false">{{ __('Approved only') }}</flux:badge>
+            <flux:badge size="sm" variant="neutral">{{ __('Approved only') }}</flux:badge>
         </div>
 
         <div class="grid grid-cols-7 gap-2 text-xs uppercase tracking-widest text-zinc-500 pb-2">

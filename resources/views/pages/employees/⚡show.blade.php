@@ -85,7 +85,7 @@ new #[Title('Employee Profile')] class extends Component {
                     </div>
                     <div>
                         <flux:text color="zinc" class="block">{{ __('Status') }}</flux:text>
-                        <flux:badge size="sm" :inset="false">{{ $employee->status_label }}</flux:badge>
+                        <flux:badge size="sm">{{ $employee->status_label }}</flux:badge>
                     </div>
                 </div>
             </flux:card>
@@ -113,7 +113,7 @@ new #[Title('Employee Profile')] class extends Component {
                                             default => 'warning',
                                         };
                                     @endphp
-                                    <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status_label }}</flux:badge>
+                                    <flux:badge size="sm" :variant="$variant">{{ $leave->status_label }}</flux:badge>
                                 </flux:cell>
                             </flux:row>
                         @empty

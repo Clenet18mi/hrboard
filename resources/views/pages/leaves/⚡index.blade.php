@@ -225,7 +225,7 @@ new #[Title('Leaves')] class extends Component {
                                     default => 'warning',
                                 };
                             @endphp
-                            <flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status_label }}</flux:badge>
+                            <flux:badge size="sm" :variant="$variant">{{ $leave->status_label }}</flux:badge>
                         </flux:cell>
                         <flux:cell align="end">
                             @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]) && $leave->status === App\Enums\LeaveStateType::PENDING)
@@ -256,7 +256,7 @@ new #[Title('Leaves')] class extends Component {
                                 <div class="italic text-zinc-500">{{ $leave->reason ?? __('No reason provided') }}</div>
                                 
                                 <div class="font-medium">{{ __('Status') }}:</div>
-                                <div><flux:badge size="sm" :variant="$variant" :inset="false">{{ $leave->status->name }}</flux:badge></div>
+                                <div><flux:badge size="sm" :variant="$variant">{{ $leave->status->name }}</flux:badge></div>
                                 
                                 @if ($leave->hr_comment)
                                     <div class="font-medium">{{ __('HR Comment') }}:</div>

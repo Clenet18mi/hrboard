@@ -74,7 +74,6 @@ new #[Title('Dashboard')] class extends Component {
         </flux:card>
 
         @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
-            {{-- RH / Admin Dashboard --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <flux:card class="flex flex-col items-center justify-center p-6 border-0 bg-white/80 shadow-sm backdrop-blur dark:bg-zinc-900/70">
                     <flux:text color="zinc" class="uppercase text-xs font-bold tracking-wider">{{ __('Active Employees') }}</flux:text>
@@ -135,7 +134,6 @@ new #[Title('Dashboard')] class extends Component {
                 </flux:card>
             </div>
         @else
-            {{-- Employee Dashboard --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <flux:card class="flex flex-col items-center justify-center p-6 border-0 bg-white/80 shadow-sm backdrop-blur dark:bg-zinc-900/70">
                     <flux:text color="zinc" class="uppercase text-xs font-bold tracking-wider">{{ __('Available Leave Balance') }}</flux:text>

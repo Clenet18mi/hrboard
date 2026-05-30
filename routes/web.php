@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::livewire('dashboard', 'pages::dashboard.index')->name('dashboard');
     Route::livewire('leaves', 'pages::leaves.index')->name('leaves.index');
     Route::livewire('notifications', 'pages::notifications.index')->name('notifications.index');
     Route::get('leaves/{leave}/pdf', [PdfController::class, 'leaveBulletin'])->name('leaves.pdf');
