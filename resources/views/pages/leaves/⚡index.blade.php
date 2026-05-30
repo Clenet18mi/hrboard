@@ -16,6 +16,8 @@ new #[Title('Leaves')] class extends Component {
     use WithPagination;
 
     public bool $showRequestModal = false;
+
+    public string $statusFilter = 'all';
     
     // Request fields
     public string $type = 'paid';
@@ -56,6 +58,11 @@ new #[Title('Leaves')] class extends Component {
         }
 
         $daysCount = Leave::calculateDays($this->start_date, $this->end_date);
+
+        if ($this->type === LeaveType::PAID->value && $daysCount > $employee->leave_balance) {
+            $this->addError('start_date', __('You do not have enough paid leave balance.'));
+            return;
+        }
 
         $leave = Leave::create([
             'employee_id' => $employee->id,
@@ -134,6 +141,10 @@ new #[Title('Leaves')] class extends Component {
             $query->where('employee_id', Auth::user()->employee?->id);
         }
 
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+
         return $query->latest()->paginate(10);
     }
 
@@ -146,14 +157,42 @@ new #[Title('Leaves')] class extends Component {
 <x-layouts::app>
     <div x-data x-on:close-modal.window="$flux.modal($event.detail.name).close()" x-on:open-modal.window="$flux.modal($event.detail.name).show()">
         <div class="flex items-center justify-between pb-4">
-            <flux:heading size="xl">{{ __('Leave Requests') }}</flux:heading>
-            
-            @if (Auth::user()->employee)
-                <flux:modal.trigger name="request-modal">
-                    <flux:button variant="primary" icon="plus">{{ __('Request Leave') }}</flux:button>
-                </flux:modal.trigger>
-            @endif
+            <div>
+                <flux:heading size="xl">{{ __('Leave Requests') }}</flux:heading>
+                <flux:subheading>{{ __('Track, validate, and download leave requests in one place.') }}</flux:subheading>
+            </div>
+
+            <div class="flex items-center gap-2">
+                @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+                    <flux:button variant="ghost" icon="calendar-days" :href="route('leaves.calendar')" wire:navigate>
+                        {{ __('Calendar') }}
+                    </flux:button>
+                @endif
+
+                @if (Auth::user()->employee)
+                    <flux:modal.trigger name="request-modal">
+                        <flux:button variant="primary" icon="plus">{{ __('Request Leave') }}</flux:button>
+                    </flux:modal.trigger>
+                @endif
+            </div>
         </div>
+
+        @if (Auth::user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
+            <div class="flex flex-wrap items-center gap-2 pb-4">
+                <flux:button size="sm" variant="{{ $statusFilter === 'all' ? 'primary' : 'ghost' }}" wire:click="$set('statusFilter', 'all')">
+                    {{ __('All') }}
+                </flux:button>
+                <flux:button size="sm" variant="{{ $statusFilter === 'pending' ? 'primary' : 'ghost' }}" wire:click="$set('statusFilter', 'pending')">
+                    {{ __('Pending') }}
+                </flux:button>
+                <flux:button size="sm" variant="{{ $statusFilter === 'approved' ? 'primary' : 'ghost' }}" wire:click="$set('statusFilter', 'approved')">
+                    {{ __('Approved') }}
+                </flux:button>
+                <flux:button size="sm" variant="{{ $statusFilter === 'rejected' ? 'primary' : 'ghost' }}" wire:click="$set('statusFilter', 'rejected')">
+                    {{ __('Rejected') }}
+                </flux:button>
+            </div>
+        @endif
 
         <flux:table>
             <flux:columns>
@@ -250,9 +289,15 @@ new #[Title('Leaves')] class extends Component {
         </div>
 
         {{-- Request Leave Modal --}}
-        <flux:modal name="request-modal" class="md:w-[450px]">
+        <flux:modal name="request-modal" class="md:w-[460px]">
             <form wire:submit="submitRequest" class="space-y-6">
                 <flux:heading size="lg">{{ __('Request Leave') }}</flux:heading>
+
+                @if (Auth::user()->employee)
+                    <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                        {{ __('Paid leave balance: :days days', ['days' => number_format(Auth::user()->employee->leave_balance, 1)]) }}
+                    </div>
+                @endif
 
                 <flux:select wire:model="type" :label="__('Leave Type')">
                     @foreach ($this->leaveTypes() as $lt)

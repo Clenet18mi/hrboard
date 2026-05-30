@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('employees/create', 'pages::employees.upsert')->name('employees.create');
         Route::livewire('employees/{employee}', 'pages::employees.show')->name('employees.show');
         Route::livewire('employees/{employee}/edit', 'pages::employees.upsert')->name('employees.edit');
+        Route::livewire('leaves/calendar', 'pages::leaves.calendar')->name('leaves.calendar');
         
         // Reporting & Admin PDF Routes
         Route::get('employees/{employee}/pdf', [PdfController::class, 'employeeSheet'])->name('employees.pdf');
