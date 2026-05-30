@@ -27,6 +27,11 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasOne(Employee::class);
     }
 
+    public function notifications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

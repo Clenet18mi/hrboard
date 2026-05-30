@@ -13,6 +13,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('employees/{employee}', 'pages::employees.show')->name('employees.show');
     Route::livewire('employees/{employee}/edit', 'pages::employees.upsert')->name('employees.edit');
     Route::livewire('leaves', 'pages::leaves.index')->name('leaves.index');
+    Route::livewire('notifications', 'pages::notifications.index')->name('notifications.index');
 });
 
 require __DIR__.'/settings.php';

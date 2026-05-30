@@ -9,6 +9,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Flux\Flux;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
 
 new #[Title('Leaves')] class extends Component {
@@ -56,7 +57,7 @@ new #[Title('Leaves')] class extends Component {
 
         $daysCount = Leave::calculateDays($this->start_date, $this->end_date);
 
-        Leave::create([
+        $leave = Leave::create([
             'employee_id' => $employee->id,
             'type' => $this->type,
             'start_date' => $this->start_date,
@@ -65,6 +66,11 @@ new #[Title('Leaves')] class extends Component {
             'reason' => $this->reason,
             'status' => LeaveStateType::PENDING,
         ]);
+
+        NotificationService::notifyRH(
+            __('New leave request from :name', ['name' => $employee->full_name]),
+            'leave_request'
+        );
 
         Flux::toast(variant: 'success', text: __('Leave request submitted.'));
         $this->reset(['type', 'reason']);
@@ -86,6 +92,15 @@ new #[Title('Leaves')] class extends Component {
             'approved_by' => Auth::id(),
         ]);
 
+        NotificationService::notify(
+            $this->reviewingLeave->employee->user,
+            __('Your leave request from :start to :end has been approved.', [
+                'start' => $this->reviewingLeave->start_date->format('d/m/Y'),
+                'end' => $this->reviewingLeave->end_date->format('d/m/Y')
+            ]),
+            'leave_approved'
+        );
+
         Flux::toast(variant: 'success', text: __('Leave request approved.'));
         $this->dispatch('close-modal', name: 'review-modal');
     }
@@ -97,6 +112,15 @@ new #[Title('Leaves')] class extends Component {
             'hr_comment' => $this->hr_comment,
             'approved_by' => Auth::id(),
         ]);
+
+        NotificationService::notify(
+            $this->reviewingLeave->employee->user,
+            __('Your leave request from :start to :end has been rejected.', [
+                'start' => $this->reviewingLeave->start_date->format('d/m/Y'),
+                'end' => $this->reviewingLeave->end_date->format('d/m/Y')
+            ]),
+            'leave_rejected'
+        );
 
         Flux::toast(variant: 'success', text: __('Leave request rejected.'));
         $this->dispatch('close-modal', name: 'review-modal');

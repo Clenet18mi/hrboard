@@ -31,6 +31,15 @@
                         {{ __('Leave Requests') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                <flux:sidebar.group :heading="__('Account')" class="grid">
+                    <flux:sidebar.item icon="bell" :href="route('notifications.index')" :current="request()->routeIs('notifications.*')" wire:navigate>
+                        {{ __('Notifications') }}
+                        @if ($count = auth()->user()->notifications()->whereNull('read_at')->count())
+                            <flux:badge size="sm" variant="danger" inset="false" class="ml-auto">{{ $count }}</flux:badge>
+                        @endif
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:spacer />
@@ -55,10 +64,17 @@
             <flux:spacer />
 
             <flux:dropdown position="top" align="end">
-                <flux:profile
-                    :initials="auth()->user()->initials()"
-                    icon-trailing="chevron-down"
-                />
+                <div class="relative">
+                    <flux:profile
+                        :initials="auth()->user()->initials()"
+                        icon-trailing="chevron-down"
+                    />
+                    @if ($count = auth()->user()->notifications()->whereNull('read_at')->count())
+                        <div class="absolute -top-1 -right-1 size-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white border-2 border-white dark:border-zinc-900">
+                            {{ $count }}
+                        </div>
+                    @endif
+                </div>
 
                 <flux:menu>
                     <flux:menu.radio.group>
@@ -80,6 +96,9 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
+                        <flux:menu.item :href="route('notifications.index')" icon="bell" wire:navigate>
+                            {{ __('Notifications') }}
+                        </flux:menu.item>
                         <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                             {{ __('Settings') }}
                         </flux:menu.item>
