@@ -17,6 +17,7 @@
                     </flux:sidebar.item>
                 </flux:sidebar.group>
 
+                @if (auth()->user()->hasRole([App\Enums\RoleType::HR->value, App\Enums\RoleType::SUPERADMIN->value]))
                 <flux:sidebar.group :heading="__('Management')" class="grid">
                     <flux:sidebar.item icon="users" :href="route('employees.index')" :current="request()->routeIs('employees.*')" wire:navigate>
                         {{ __('Employees') }}
@@ -25,6 +26,7 @@
                         {{ __('Departments') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+                @endif
 
                 <flux:sidebar.group :heading="__('Leaves')" class="grid">
                     <flux:sidebar.item icon="calendar" :href="route('leaves.index')" :current="request()->routeIs('leaves.*')" wire:navigate>
